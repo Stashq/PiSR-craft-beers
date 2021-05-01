@@ -10,6 +10,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import shuffle
 from torch import FloatTensor, LongTensor
 from torch.utils.data import DataLoader, TensorDataset
+from tqdm.auto import tqdm
 
 from src.util.discretizer import RatingDiscretizer
 
@@ -35,7 +36,34 @@ class Data:
         return encoder
 
     @lazy
-    def train_val_test_ratings(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    def user_count(self) -> int:
+        return self.user_encoder.classes_.size
+
+    @lazy
+    def beer_count(self) -> int:
+        return self.beer_encoder.classes_.size
+
+    @lazy
+    def max_rating(self) -> float:
+        return self.train_ratings.rating.values.max() 
+
+    @lazy
+    def train_ratings(self) -> pd.DataFrame:
+        train_ratings, _, _ = self._train_val_test_ratings
+        return train_ratings
+
+    @lazy
+    def val_ratings(self) -> pd.DataFrame:
+        _, val_ratings, _ = self._train_val_test_ratings
+        return val_ratings
+
+    @lazy
+    def test_ratings(self) -> pd.DataFrame:
+        _, _, test_ratings = self._train_val_test_ratings
+        return test_ratings
+
+    @lazy
+    def _train_val_test_ratings(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 
         beers, counts = np.unique(self.ratings.beer_id.values, return_counts=True)
         single_beers = set(beers[counts == 1])
@@ -75,27 +103,6 @@ class Data:
         return train_ratings, val_ratings, test_ratings
 
     @lazy
-    def train_ratings(self) -> pd.DataFrame:
-        train_ratings, _, _ = self.train_val_test_ratings
-        return train_ratings
-
-    @lazy
-    def val_ratings(self) -> pd.DataFrame:
-        _, val_ratings, _ = self.train_val_test_ratings
-        return val_ratings
-
-    @lazy
-    def test_ratings(self) -> pd.DataFrame:
-        _, _, test_ratings = self.train_val_test_ratings
-        return test_ratings
-
-    @lazy
-    def rating_discretizer(self) -> RatingDiscretizer:
-        rating_discretizer = RatingDiscretizer()
-        rating_discretizer.fit_transform(self.train_ratings)
-        return rating_discretizer
-
-    @lazy
     def train_discretized_ratings(self) -> pd.DataFrame:
         return self.rating_discretizer.transform(self.train_ratings)
 
@@ -106,6 +113,72 @@ class Data:
     @lazy
     def test_discretized_ratings(self) -> pd.DataFrame:
         return self.rating_discretizer.transform(self.test_ratings)
+
+    @lazy
+    def rating_discretizer(self) -> RatingDiscretizer:
+        rating_discretizer = RatingDiscretizer()
+        rating_discretizer.fit_transform(self.train_ratings)
+        return rating_discretizer
+
+    @lazy
+    def train_interactions(self) -> FloatTensor:
+        interactions = self._interactions(self.train_ratings)
+        return FloatTensor(interactions)
+
+    @lazy
+    def val_interactions(self) -> FloatTensor:
+        interactions = self._interactions(self.val_ratings)
+        return FloatTensor(interactions)
+
+    @lazy
+    def test_interaction(self) -> FloatTensor:
+        interactions = self._interactions(self.test_ratings)
+        return FloatTensor(interactions)
+
+    def _interactions(self, ratings: pd.DataFrame) -> np.ndarray:
+        """
+        Creates interaction matrix from ratings DataFrame.
+
+        Parameters
+        ----------
+        ratings : pd.DataFrame
+            Ratings DataFrame `[user_id, beer_id, rating]`.
+
+        Returns
+        -------
+        np.ndarray
+            Interactions matrix. Rows are users, columns are beers.
+            Specific cell denotes the rating, how a certain user scored the beer.
+            Interactions are encoded to handle continuity of indices.
+        """
+
+        users_encoded = self.user_encoder.transform(ratings.user_id.values)
+        beers_encoded = self.beer_encoder.transform(ratings.beer_id.values)
+        scores = ratings.rating
+
+        user_dim = self.user_count
+        beer_dim = self.beer_count
+        # interactions = sp.sparse.csr_matrix((user_dim, beer_dim), dtype=float)
+
+        interactions = np.zeros((user_dim, beer_dim), dtype=float)
+
+        iterator = tqdm(
+            zip(users_encoded, beers_encoded, scores),
+            desc="Building interaction matrix",
+            total=len(users_encoded),
+        )
+
+        for user_id, beer_id, score in iterator:
+            interactions[user_id, beer_id] = score
+
+        return interactions
+
+    @classmethod
+    def get_sparsity_factor(cls, array: np.ndarray) -> float:
+        rows, _ = array.nonzero()
+        sparsity_factor = len(rows) / array.size
+
+        return sparsity_factor
 
     @lazy
     def user_train(self) -> np.ndarray:
@@ -139,15 +212,15 @@ class Data:
 
     @lazy
     def y_train(self) -> np.ndarray:
-        return self.train_ratings.rating.values
+        return self.train_ratings.rating.values / self.max_rating
 
     @lazy
     def y_val(self) -> np.ndarray:
-        return self.val_ratings.rating.values
+        return self.val_ratings.rating.values / self.max_rating
 
     @lazy
     def y_test(self) -> np.ndarray:
-        return self.test_ratings.rating.values
+        return self.test_ratings.rating.values / self.max_rating
 
     @lazy
     def train_set(self) -> TensorDataset:

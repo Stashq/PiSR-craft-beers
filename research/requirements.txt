@@ -94,6 +94,8 @@ ipython==7.22.0
     #   jupyter-console
 ipywidgets==7.6.3
     # via jupyter
+isort==5.8.0
+    # via -r requirements.in
 jedi==0.18.0
     # via ipython
 jinja2==2.11.3
@@ -262,7 +264,7 @@ rsa==4.7.2
     # via google-auth
 scikit-learn==0.23.1
     # via -r requirements.in
-scipy==1.6.2
+scipy==1.6.3
     # via scikit-learn
 send2trash==1.5.0
     # via notebook

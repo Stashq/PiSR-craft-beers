@@ -133,3 +133,6 @@ data/
 
 cov*
 .idea
+
+**lightning_logs/
+models/
