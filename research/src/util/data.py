@@ -68,7 +68,9 @@ class Data:
     def _train_val_test_ratings(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 
         beers, counts = np.unique(self.ratings.beer_id.values, return_counts=True)
-        single_beers = set(beers[counts == 1])
+        # ! TAKE MORE THAN 1, SO WE CAN TEST PROPERLY
+        # single_beers = set(beers[counts == 1])
+        single_beers = set(beers[counts < 10])
 
         # ? beers with a single rating will just go to training set
         single_ratings = self.ratings.loc[self.ratings.beer_id.isin(single_beers)]
@@ -79,7 +81,7 @@ class Data:
         )
 
         beers, counts = np.unique(val_test_ratings.beer_id.values, return_counts=True)
-        single_val_beers = set(beers[counts == 1])
+        single_val_beers = set(beers[counts < 10])
 
         single_val_ratings = val_test_ratings.loc[
             val_test_ratings.beer_id.isin(single_val_beers)
