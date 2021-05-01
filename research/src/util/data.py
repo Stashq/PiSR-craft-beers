@@ -21,7 +21,9 @@ class Data:
 
     @lazy
     def ratings(self) -> pd.DataFrame:
-        return pd.read_csv(self.ratings_path)
+        ratings = pd.read_csv(self.ratings_path)
+        ratings = ratings.drop_duplicates(subset=["user_id", "beer_id"])
+        return ratings
 
     @lazy
     def user_encoder(self) -> LabelEncoder:
@@ -123,16 +125,19 @@ class Data:
     @lazy
     def train_interactions(self) -> FloatTensor:
         interactions = self._interactions(self.train_ratings)
+        interactions /= self.max_rating
         return FloatTensor(interactions)
 
     @lazy
     def val_interactions(self) -> FloatTensor:
         interactions = self._interactions(self.val_ratings)
+        interactions /= self.max_rating
         return FloatTensor(interactions)
 
     @lazy
     def test_interaction(self) -> FloatTensor:
         interactions = self._interactions(self.test_ratings)
+        interactions /= self.max_rating
         return FloatTensor(interactions)
 
     def _interactions(self, ratings: pd.DataFrame) -> np.ndarray:

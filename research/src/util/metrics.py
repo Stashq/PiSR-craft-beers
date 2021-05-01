@@ -13,26 +13,25 @@ def test_model(
     test_discretized_ratings: pd.DataFrame,
     model: Recommender,
     k: int = 20
-) -> Tuple[pd.DataFrame, float]:
+) -> pd.DataFrame:
 
     recommendations: Dict[int, Tuple[np.ndarray, np.ndarray]] = {}
     test_discretized_ratings = test_discretized_ratings.groupby("user_id")
 
     iterator = tqdm(test_discretized_ratings, desc="Calculating predictions")
 
-    # ! TODO: multiprocessing? dask?
     for user_id, _ in iterator:
         pred_beers = model.predict_ratings(user_id)
         recommendations[user_id] = pred_beers
 
     mrr = get_mean_reciprocal_rank(test_discretized_ratings, recommendations)
     map_ = get_mean_average_precision(test_discretized_ratings, recommendations, k)
-    ndcg = get_ndcg(test_discretized_ratings, recommendations, k)
-    coverage = get_coverage(test_discretized_ratings, recommendations)
+    ndcg = get_ndcg(test_discretized_ratings, recommendations, model.MAX_RATING, k)
+    # coverage = get_coverage(test_discretized_ratings, recommendations)
     rmse = get_rmse(test_discretized_ratings, recommendations)
 
-    metrics = pd.concat([mrr, map_, ndcg, rmse])
-    return metrics, coverage
+    scores = pd.concat([mrr, map_, ndcg])
+    return scores, rmse
 
 
 def get_mean_reciprocal_rank(
@@ -125,15 +124,15 @@ def get_mean_average_precision(
     return map_
 
 
-# ! TODO: znormalizować ocenę, bo wychodzi gówno
 def get_ndcg(
     test_discretized_ratings: pd.DataFrame,
     recommendations: Dict[int, Tuple[np.ndarray, np.ndarray]],
-    k: int = 20
+    max_rating: float = 1.,
+    k: int = 20,
 ) -> pd.DataFrame:
 
     ranks = []
-    iterator = tqdm(test_discretized_ratings, desc="Testing predictions")
+    iterator = tqdm(test_discretized_ratings, desc="Calculating NDCG")
 
     for user_id, user_ratings in iterator:
         pred_beers, pred_ratings = recommendations[user_id]
@@ -147,15 +146,21 @@ def get_ndcg(
         ]
 
         user_ratings = user_ratings.sort_values(by="rating", ascending=False)
-        test_ratings = user_ratings[user_ratings.beer_id.isin(test_beers)].rating.values
+        test_ratings = user_ratings[
+            user_ratings.beer_id.isin(test_beers)
+            & user_ratings.beer_id.isin(pred_beers)
+        ].rating.values
 
+        pred_ratings = np.array(pred_ratings) / max_rating
+        test_ratings = test_ratings / max_rating
         ndcg = 1.0
 
         if test_ratings.size > 1:
             ndcg = ndcg_score([pred_ratings], [test_ratings])
+            ranks.append(ndcg)
 
-        ranks.append(ndcg)
-
+        # ranks.append(ndcg)
+        
     ndcg = pd.DataFrame(
         zip(
             [user_id for user_id, user_ratings in test_discretized_ratings],
@@ -173,6 +178,7 @@ def get_coverage(
     recommendations: Dict[int, Tuple[np.ndarray, np.ndarray]],
 ) -> float:
 
+    # ! TODO: fix this shiet
     all_beers = set(test_discretized_ratings.beer_id.values)
 
     pred_beers = [beers for beers, ratings in recommendations.values()]
@@ -188,7 +194,7 @@ def get_rmse(
 ) -> float:
 
     scores: List[float] = []
-    iterator = tqdm(test_discretized_ratings, desc="Testing predictions")
+    iterator = tqdm(test_discretized_ratings, desc="Calculating RMSE")
 
     for user_id, user_ratings in iterator:
         pred_beers, pred_ratings = recommendations[user_id]
@@ -202,7 +208,10 @@ def get_rmse(
         ]
 
         user_ratings = user_ratings.sort_values(by="rating", ascending=False)
-        test_ratings = user_ratings[user_ratings.beer_id.isin(test_beers)].rating.values
+        test_ratings = user_ratings[
+            user_ratings.beer_id.isin(test_beers)
+            & user_ratings.beer_id.isin(pred_beers)
+        ].rating.values
 
         e = pred_ratings - test_ratings
         se = e ** 2
@@ -215,7 +224,7 @@ def get_rmse(
             ["RMSE"] * len(test_discretized_ratings),
             scores
         ),
-        columns=["user_id", "metric", "score"]
+        columns=["user_id", "metric", "error"]
     )
 
     return rmse
