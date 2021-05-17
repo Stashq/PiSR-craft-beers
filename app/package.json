@@ -1,22 +1,37 @@
 {
-  "name": "~TODO~",
-  "version": "0.0.1",
+  "name": "svelte-app",
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "preview": "svelte-kit preview",
-    "lint": "eslint --ignore-path .gitignore ."
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public --no-clear",
+    "validate": "svelte-check"
   },
   "devDependencies": {
-    "@sveltejs/kit": "next",
-    "@typescript-eslint/eslint-plugin": "^4.19.0",
-    "@typescript-eslint/parser": "^4.19.0",
-    "eslint": "^7.22.0",
-    "eslint-plugin-svelte3": "^3.2.0",
-    "svelte": "^3.34.0",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-typescript": "^8.0.0",
+    "@smui/button": "^4.2.0",
+    "@smui/image-list": "^4.2.0",
+    "@smui/layout-grid": "^4.2.0",
+    "@smui/menu": "^4.2.0",
+    "@tsconfig/svelte": "^1.0.0",
+    "node-sass": "^6.0.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "svelte": "^3.0.0",
+    "svelte-check": "^1.0.0",
     "svelte-preprocess": "^4.0.0",
+    "svelte-preprocess-sass": "^1.0.0",
     "tslib": "^2.0.0",
     "typescript": "^4.0.0"
   },
-  "type": "module"
+  "dependencies": {
+    "rollup-plugin-sass": "^1.2.2",
+    "sirv-cli": "^1.0.0"
+  }
 }
