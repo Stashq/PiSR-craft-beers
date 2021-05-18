@@ -29,18 +29,23 @@
 
   .head-cell {
     height: 60px;
+    margin-top: -32px;
+    width: 100%;
+    top:0;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    background-color: var(--mdc-theme-secondary, #333);
+    background-color: var(--mdc-theme-secondary, rgb(3, 3, 3));
     color: var(--mdc-theme-on-secondary, #fff);
+    z-index: 10;
   }
   .content-cell{
       height: 90vh;
-      padding: 3%;
+      margin-top: -32px;
       background-color: var(--mdc-theme-secondary, #333);
       display: flex;
       justify-content:center;
+      z-index: 11;
   }
 
 </style>

@@ -10,10 +10,9 @@
 	let beer_desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec gravida tortor eget felis molestie, non luctus quam aliquam. Nunc et arcu est. Nulla at lacus lorem. Mauris faucibus bibendum magna vel facilisis. Integer ut ligula quis sem efficitur luctus. Pellentesque a lacus nec magna mollis dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam in nibh ac magna ultricies mattis. Sed elementum arcu et lacus sollicitudin, a finibus mauris faucibus. Mauris diam arcu, sollicitudin et tortor at, convallis euismod nunc. Donec tempus mauris metus, in tempor orci pharetra eget. Nam euismod massa non egestas lacinia. Ut rutrum quam at mauris interdum, nec dictum ex finibus. Maecenas sit amet congue ipsum. Sed volutpat nisi ut vehicula congue. Donec justo ante, elementum quis ullamcorper sit amet, venenatis vitae tellus."
 
 </script>
-	<div style="min-width: 100px;">
+	<div style="min-width: 100px;" class='content_holder'>
 		{#if typeof beer !== "undefined"}
 		<h1 style="color:white">{beer[0]}</h1>
-		${console.log(beer)}
 		<img src={beer[3]} alt="focused beer" class="beer_img">
 		<div class="content-scroller">
 			<p style="color:white">brewery: {beer[1]}</p>
@@ -39,12 +38,17 @@
 
 	.content-scroller{
 		overflow: scroll;
-		height: 38%;
+		height: 60%;
 		overflow-x: hidden; /* Hide horizontal scrollbar */
+		margin: 0 0 0 5%;
 		
 	}
 	.beer_img{
-		width: 100%;
-		height: 50%;
+		width: 80%;
+	}
+	.content_holder{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 </style>
