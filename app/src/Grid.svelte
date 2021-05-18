@@ -4,12 +4,19 @@
 
     import BeerContent from './Beer_content.svelte';
     import BeerImages from './Beers.svelte'
+
+    const response = fetch('http://127.0.0.1:8000/getusers/',
+    {headers: {
+    'Content-Type': 'application/json',},
+    }).then(res => res.json()).then(res=> users=res)
+    const users = await response.json()
+    console.log(users)
   </script>
   
 
 <LayoutGrid>
     <Cell span={12}>
-        <div class="head-cell"><Menu></Menu></div>
+        <div class="head-cell"><Menu users={users}></Menu></div>
     </Cell>
     <Cell span={5}>
         <div class="content-cell">

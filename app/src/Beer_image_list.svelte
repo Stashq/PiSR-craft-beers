@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let name: string;
+
 import BeerImg from './BeerImg.svelte';
 	import BeerList from './BeerImg.svelte'
 	let img = "./tmp.png"

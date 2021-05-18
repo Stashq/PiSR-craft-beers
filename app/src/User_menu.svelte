@@ -1,11 +1,12 @@
 <script lang="ts">
-	export let name: string;
+	let actual_user: string;
 	import Menu from '@smui/menu';
 	import List, { Item, Separator, Text } from '@smui/list';
 	import Button from '@smui/button';
-  
+	export let users;
 	let menu;
 	let clicked = 'nothing yet';
+	console.log(users)
 </script>
 
 	<div style="min-width: 100px;">
