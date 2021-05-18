@@ -124,6 +124,7 @@ def get_mean_average_precision(
     return map_
 
 
+# ! TODO: missing k
 def get_ndcg(
     test_discretized_ratings: pd.DataFrame,
     recommendations: Dict[int, Tuple[np.ndarray, np.ndarray]],
@@ -156,11 +157,11 @@ def get_ndcg(
         ndcg = 1.0
 
         if test_ratings.size > 1:
-            ndcg = ndcg_score([pred_ratings], [test_ratings])
+            ndcg = ndcg_score([pred_ratings[:k]], [test_ratings[:k]])
             ranks.append(ndcg)
 
         # ranks.append(ndcg)
-        
+
     ndcg = pd.DataFrame(
         zip(
             [user_id for user_id, user_ratings in test_discretized_ratings],
