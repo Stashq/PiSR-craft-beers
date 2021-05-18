@@ -1,17 +1,27 @@
 <script lang="ts">
+import { subscribe } from 'svelte/internal';
+
 	let img = "./tmp.png"
+	export let beer_data;
+	import { actual_beer} from './store.js';
+	let act_beer;
+	actual_beer.subscribe(value => {
+		act_beer=value
+	})
+	function handleClick() {
+		actual_beer.set(beer_data)
+	}
 	
 </script>
-
-	<div>
-		<img class="beer_img" src={img}>
-		<center><div class="beer_desc">Ocena 4.0</div></center>
+	{#if typeof beer_data !=='undefined'}
+	<div on:click={handleClick}>
+		<img class="beer_img" src={beer_data[3]}>
+		<center><div class="beer_desc">Ocena {beer_data[2]}</div></center>
 	</div>
-
+	{/if}
 <style>
 	.beer_img{
 		width: 100%;
-		
 	}
 	.beer_desc{
 		position: relative;

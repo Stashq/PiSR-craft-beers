@@ -1,13 +1,23 @@
 <script lang="ts">
 	
 	import BeerList from './Beer_image_list.svelte'
-	
+	let rec_beers;
+	let best_beers;
+	let popular_beers;
+
+	import { actual_beer, beers} from './store.js';
+	const x = beers.subscribe
+	(value => {//console.log(value)
+		rec_beers = value.recommended;
+		best_beers =  value.best;
+		popular_beers =  value.popular;
+	})
 	
 </script>
 
 	<div style="min-width: 100px; width:100%">
-			{#each Array(3) as _unused, i}
-			  <BeerList></BeerList>
+			{#each [rec_beers,best_beers,popular_beers] as beers, i}
+			  <BeerList beerlist={beers}></BeerList>
 			{/each}
 	  </div>
 
