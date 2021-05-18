@@ -12,7 +12,8 @@
 	async function changeUser(id){
 		{
 		/////Get beer info ////
-		const beers_req = await fetch(`http://127.0.0.1:8000/get_rec/?user_id=${id}&k=10`,
+		if( Number.isInteger(id)){
+			const beers_req = await fetch(`http://127.0.0.1:8000/get_rec/?user_id=${id}&k=10`,
 			{headers: {'Content-Type': 'application/json',},})
 			.then(
 				res => res.json())
@@ -26,6 +27,8 @@
 			
 			;
 		}
+		}
+		
 	}
 	onMount(async () =>{
 	/// Get users ///
@@ -39,7 +42,8 @@
 				users.set(j)}
 			);
 		console.log(user_id)
-		await changeUser(user_id.id)})
+		//await changeUser(user_id.id)
+	})
 
 				
 </script>

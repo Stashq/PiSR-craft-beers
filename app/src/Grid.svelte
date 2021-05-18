@@ -26,14 +26,7 @@
   </LayoutGrid>
 
 <style>
-  .demo-cell {
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--mdc-theme-secondary, #333);
-    color: var(--mdc-theme-on-secondary, #fff);
-  }
+
   .head-cell {
     height: 60px;
     display: flex;
@@ -44,6 +37,7 @@
   }
   .content-cell{
       height: 90vh;
+      padding: 3%;
       background-color: var(--mdc-theme-secondary, #333);
       display: flex;
       justify-content:center;

@@ -15,7 +15,7 @@
 	
 </script>
 
-	<div style="min-width: 100px; width:100%">
+	<div class="imageholder" style="">
 			{#each [rec_beers,best_beers,popular_beers] as beers, i}
 			  <BeerList beerlist={beers}></BeerList>
 			{/each}
@@ -25,5 +25,12 @@
 	.beer_img{
 		width: 50%;
 		height: 70%;
+	}
+	.imageholder{
+		min-width: 100px;
+		width:100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
 	}
 </style>

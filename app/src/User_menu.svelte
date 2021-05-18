@@ -15,9 +15,9 @@
 	let menu;
 </script>
 
-<pre class="status">user: {actual.name}</pre>
+<pre class="status">Użytkownik: {actual.name}</pre>
 	<div style="min-width: 100px;">
-		<Button on:click={() => menu.setOpen(true)}>...</Button>
+		<Button style="color:red;"on:click={() => menu.setOpen(true)}>User Menu</Button>
 		<Menu bind:this={menu}>
 		  <List>
 			{#each users_list as user}

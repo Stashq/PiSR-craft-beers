@@ -39,7 +39,9 @@
 
 	.content-scroller{
 		overflow: scroll;
-		height: 50%;
+		height: 38%;
+		overflow-x: hidden; /* Hide horizontal scrollbar */
+		
 	}
 	.beer_img{
 		width: 100%;
