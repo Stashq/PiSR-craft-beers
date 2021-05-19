@@ -135,4 +135,4 @@ cov*
 .idea
 
 **lightning_logs/
-models/
+*.pt
