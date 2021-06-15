@@ -38,9 +38,7 @@ class MLP(Collaborative):
             "weight_decay"
         )
 
-        self.init()
-
-    def init(self):
+    def setup(self, stage):
 
         self.user_embedding = nn.Embedding(
             self.hparams.user_dim,

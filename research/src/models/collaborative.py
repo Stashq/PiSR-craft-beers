@@ -26,10 +26,10 @@ class Collaborative(LightningModule, Recommender):
             'cuda' if torch.cuda.is_available() else 'cpu'
         )
 
-    @abstractmethod
-    def init(self):
-        # ? define architecture here
-        pass
+    # @abstractmethod
+    # def init(self):
+    #     # ? define architecture here
+    #     pass
 
     @abstractmethod
     def forward(
