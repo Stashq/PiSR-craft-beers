@@ -261,3 +261,4 @@ class Data:
 
     def get_test_loader(self, *, batch_size: int) -> DataLoader:
         return DataLoader(self.test_set, batch_size=batch_size)
+
