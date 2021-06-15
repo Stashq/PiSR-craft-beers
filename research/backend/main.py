@@ -74,14 +74,15 @@ beer_data= beer_data.join(popular_beer,on="beer_id",rsuffix="count_")
 async def get_users(request: Request):
     try:
         users = [
-            {"name": "Ktoś1", "id": 17932},
-            {"name": "Ktoś2", "id": 11388},
-            {"name": "Ktoś3", "id": 13459},
+            {"name": "Ktoś1", "id": 2201},
+            {"name": "Ktoś2", "id": 1727},
+            {"name": "Ktoś3", "id": 12447},
         ]
         return json.dumps(users)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+dic = {}
 
 @app.get(
     "/get_rec/",
@@ -91,7 +92,10 @@ async def get_recommendations(request: Request, user_id: int, k: int = 10):
     print("user_id",user_id)
     print("K",k)
     beers_ids_all, rating = model.predict_ratings(user_id)
+
     beers_ids = beers_ids_all[:k]
+    dic[str(tuple(beers_ids_all))] = 'test'
+    print("test",len(dic))
     rating = rating[:k]
     print(beers_ids_all)
     print(rating)
@@ -116,5 +120,3 @@ async def get_recommendations(request: Request, user_id: int, k: int = 10):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

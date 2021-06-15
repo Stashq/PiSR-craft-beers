@@ -119,15 +119,17 @@ class Collaborative(LightningModule, Recommender):
         user_id = self.user_encoder.transform([user_id])[0]
 
         beers = set(range(self.beer_encoder.classes_.size))
+        print("ilosc piw",len(beers))
         beers_drinked = self.interactions[user_id].nonzero()
-
+        print("ilosc piw drunk", len(beers_drinked))
         if len(beers_drinked):
-            beers_drinked = set(beers_drinked[0])
+            beers_drinked = set(beers_drinked.flatten().numpy())
         else:
             beers_drinked = set()
 
         beers -= beers_drinked
         beers = list(beers)
+        print(len(beers))
 
         beers = torch.LongTensor(beers).to(self.predict_device)
         user = torch.LongTensor([user_id] * len(beers)).to(self.predict_device)
@@ -145,5 +147,7 @@ class Collaborative(LightningModule, Recommender):
         beers = self.beer_encoder.inverse_transform(beers)
         ratings *= self.MAX_RATING
         # ratings = self.rating_encoder.inverse_transform(ratings)
-
+        print("wyjscie z modelu",beers,ratings)
         return beers, ratings
+
+
