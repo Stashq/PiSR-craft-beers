@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-
+import uvicorn
 import pandas as pd
 import torch
 from fastapi import FastAPI, HTTPException, Request
@@ -8,10 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 import torch
 import numpy as np
-from .DummyModel import DummyModel
 from src.models import MLP
 from src.util import Data
 import os
+
+
 MODEL_PATH = Path("../model/mlp.pt")
 BEER_PATH = Path("../data/beers_metadata.csv")
 
@@ -87,16 +88,16 @@ async def get_users(request: Request):
     summary="Returns beer info for user",
 )
 async def get_recommendations(request: Request, user_id: int, k: int = 10):
-
-    beers_ids, rating = model.predict_ratings(user_id)
-    print("\n",len(beer_data))
-    print(user_id,beers_ids,rating)
-    print("\n")
-    recommended = beer_data[beer_data.beer_id.isin(beers_ids)]
+    print("user_id",user_id)
+    print("K",k)
+    beers_ids_all, rating = model.predict_ratings(user_id)
+    beers_ids = beers_ids_all[:k]
+    rating = rating[:k]
+    print(beers_ids_all)
+    print(rating)
+    recommended = beer_data.set_index("beer_id").loc[beers_ids]
     recommended.rating = np.around(rating, 2)
-    recommended = recommended.sort_values(by=["rating"], ascending=False)
-    recommended = recommended.head(k)
-
+    print(recommended)
 
 
     best = beer_data.sort_values(by=["rating"],ascending=False).head(k)
@@ -114,3 +115,6 @@ async def get_recommendations(request: Request, user_id: int, k: int = 10):
         return res
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
