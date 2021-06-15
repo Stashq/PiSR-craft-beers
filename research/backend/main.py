@@ -67,15 +67,15 @@ ratings = pd.read_csv(RATINGS_PATH)
 
 popular_beer= ratings.groupby("beer_id",as_index=False).count()
 beer_data= beer_data.join(popular_beer,on="beer_id",rsuffix="count_")
-print(beer_data,'done')
+
 
 @app.get("/getusers/", summary="Returns possible users for prototype")
 async def get_users(request: Request):
     try:
         users = [
-            {"name": "Ktoś1", "id": 1147},
-            {"name": "Ktoś2", "id": 1967},
-            {"name": "Ktoś3", "id": 229},
+            {"name": "Ktoś1", "id": 17932},
+            {"name": "Ktoś2", "id": 11388},
+            {"name": "Ktoś3", "id": 13459},
         ]
         return json.dumps(users)
     except Exception as e:
@@ -86,17 +86,21 @@ async def get_users(request: Request):
     "/get_rec/",
     summary="Returns beer info for user",
 )
-
 async def get_recommendations(request: Request, user_id: int, k: int = 10):
 
     beers_ids, rating = model.predict_ratings(user_id)
+    print("\n",len(beer_data))
+    print(user_id,beers_ids,rating)
+    print("\n")
+    recommended = beer_data[beer_data.beer_id.isin(beers_ids)]
+    recommended.rating = np.around(rating, 2)
+    recommended = recommended.sort_values(by=["rating"], ascending=False)
+    recommended = recommended.head(k)
 
-    recommended = beer_data[beer_data.beer_id.isin(beers_ids)].head(k)
-    recommended.rating = np.around(rating[0:k], 2)
-    recommended=recommended.sort_values(by=["rating"],ascending=False).head(k)
+
 
     best = beer_data.sort_values(by=["rating"],ascending=False).head(k)
-    print(beer_data.columns)
+
 
     popular = beer_data.sort_values(by=["comment"], ascending=False).head(k)
 

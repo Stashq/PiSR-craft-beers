@@ -12,16 +12,28 @@
 		best_beers =  value.best;
 		popular_beers =  value.popular;
 	})
-	
+	let row_names = ["Twoje rekomendacje","Najlepsze piwa","Najpopularniejsze"]
 </script>
 
 	<div class="imageholder" style="">
 			{#each [rec_beers,best_beers,popular_beers] as beers, i}
+		<div class="beer_row_title_div">
+		<h class="beer_row_title">{row_names[i]}</h>
+		</div>
 			  <BeerList beerlist={beers}></BeerList>
 			{/each}
 	  </div>
 
 <style>
+	.beer_row_title_div{
+		display: flex;
+		justify-content:center;
+		font-size: 2.5em;
+	}
+	.beer_row_title{
+		color:white;
+
+	}
 	.beer_img{
 		width: 50%;
 		height: 70%;

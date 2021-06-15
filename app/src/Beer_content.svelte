@@ -25,10 +25,10 @@
 			<p style="color:white">blg: {beer[5]}</p>
 			<p style="color:white">alc: {beer[6]}</p>
 			<p style="color:white">ibu: {beer[7]}</p>
-			
+<!-- 			
 			TUTAJ POWINNIEN BYĆ WYKRES
 			
-			<img src={img} >
+			<img src={img} >  -->
 		</div>
 		{/if}	
 	  </div>
