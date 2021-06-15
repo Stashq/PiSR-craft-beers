@@ -18,7 +18,7 @@
 	<div class="imageholder" style="">
 			{#each [rec_beers,best_beers,popular_beers] as beers, i}
 		<div class="beer_row_title_div">
-		<h class="beer_row_title">{row_names[i]}</h>
+			<h2 class="beer_row_title">{row_names[i]}</h2>
 		</div>
 			  <BeerList beerlist={beers}></BeerList>
 			{/each}
@@ -28,10 +28,9 @@
 	.beer_row_title_div{
 		display: flex;
 		justify-content:center;
-		font-size: 2.5em;
 	}
 	.beer_row_title{
-		color:white;
+		color:#e6a14e;
 
 	}
 	.beer_img{
