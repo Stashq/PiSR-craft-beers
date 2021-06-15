@@ -26,7 +26,7 @@ import { subscribe } from 'svelte/internal';
 	.beer_desc{
 		position: relative;
 		bottom:25px;
-		color:white;
-		background: rgba(0, 0, 0, 0.3);
+		color:#e6a14e;
+		background: rgba(0, 0, 0, 0.7);
 	}
 </style>

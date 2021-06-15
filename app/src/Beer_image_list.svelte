@@ -13,10 +13,14 @@ export let beerlist;
 </script>
 	<div class="beer_img_container">
 			{#if typeof beerlist.data !=='undefined'}
-			<Carousel loop={true} perPage={4} dots={false} draggable={false}>
-				<span class="control" slot="right-control">
+			<Carousel loop={true} perPage={5} dots={false} draggable={false} controls={true}>
+				<span class="control_left" slot="left-control">
+					<ChevronLeftIcon />
+				  </span>
+				<span class="control_right" slot="right-control">
 					<ChevronRightIcon />
 				  </span>
+				  
 				{#each Object.values(beerlist.data) as beer }
 					<BeerImg beer_data={beer}></BeerImg>	
 				{/each}}
@@ -31,11 +35,22 @@ export let beerlist;
 		width: 100%;
 		display: flex;
 		justify-content: space-around;
+		
 	}
-	.control :global(svg) {
+	.control_right :global(svg) {
         width: 100%;
         height: 100%;
-		margin-left: 55px;
+		position:relative;
+		left:20px;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 32px;
+    }
+	.control_left :global(svg) {
+        width: 100%;
+        height: 100%;
+		position:relative;
+		right:20px;
         color: #fff;
         border: 2px solid #fff;
         border-radius: 32px;

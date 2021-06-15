@@ -16,14 +16,13 @@
           <Menu></Menu>
         </div>
     </Cell>
-    <Cell span={5}>
+    <Cell span={3}>
         <div class="content-cell">
-
             <BeerContent>
             </BeerContent>
         </div>
     </Cell>
-    <Cell span={7}>
+    <Cell span={9}>
         <div class="content-cell">
             <BeerImages></BeerImages>
         </div>
@@ -68,6 +67,7 @@
   :global(body){
     background-color: #262c32;
   }
+  
   
 
 </style>
